@@ -1,0 +1,31 @@
+@font-face
+{
+    font-family: mainFont;
+    src: url('GeosansLight.ttf')
+}
+
+html {
+    font-family: mainFont;
+}
+
+body {
+    margin:0;
+    padding:0;
+}
+
+h2 {
+    margin:0;
+    padding:0;
+    color: #aaa;
+}
+
+a {
+    border:none;
+}
+
+.main { 
+    width: 600px;
+    margin:0 auto;
+    padding:15px;
+    box-shadow: 10px 10px 155px #888888; 
+}
