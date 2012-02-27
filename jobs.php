@@ -7,11 +7,11 @@ include('simplehtmldom/simple_html_dom.php');
 /**
  * Telecommuting Jobs Scrapper
  * 2012-02-22
- * Author: freddy@netzuri.com
+ * Author: fredduarte@gmail.com
  */
 class Job extends simple_html_dom_node{
 
-    const logger = "/var/www/test/errors.log";
+    const logger = "errors.log";
     private $ycombinator = array('name'=>'Y Combinator','url'=>'http://news.ycombinator.com/jobs');
     private $craigslist = array('name'=>'Craigslist (telecommuting)', 'url'=>'https://www.google.com/search?q=%22This+is+a+contract+job%22+%22Telecommuting+is+ok.%22+PHP+site:craigslist.org&bav=on.2,or.r_gc.r_pw.,cf.osb&hl=en');
     private $signals = array('name'=>'37signals (telecommuting)', 'url'=>'http://jobs.37signals.com/jobs/search?term=anywhere');
