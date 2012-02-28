@@ -17,11 +17,12 @@ class Job extends simple_html_dom_node{
     private $signals = array('name'=>'37signals (telecommuting)', 'url'=>'http://jobs.37signals.com/jobs/search?term=anywhere');
     private $signals2 = array('name'=>'37signals (telecommuting)', 'url'=>'https://www.google.com/#sclient=psy-ab&hl=en&site=&source=hp&q=%22PHP%22%20%22anywhere%22%20site%3Ahttp%3A%2F%2Fjobs.37signals.com%2Fjobs&pbx=1&oq=&aq=&aqi=&aql=&gs_sm=&gs_upl=&bav=on.2,or.r_gc.r_pw.,cf.osb&fp=9c4f9ba461693a79&biw=1170&bih=595&pf=p&pdl=3000');
     private $stackOverflow = array('name'=>'Stack Overflow', 'url'=>'http://careers.stackoverflow.com/jobs?searchTerm=php&range=20&istelecommute=true');
+    private $twitter = array('name'=>'Twitter', 'url'=>'https://twitter.com/#!/search/php%20telecommute');
 
     public function __construct()
     {
         echo '<p>' . date('Y-m-d', time()) . '</p>';
-        
+
         // ycombinator
         $ycombinatorLinks = $this->ycombinatorParser($this->ycombinator['url']);
         $this->write($this->ycombinator['name'], $ycombinatorLinks);
@@ -34,22 +35,18 @@ class Job extends simple_html_dom_node{
         $signalsLinks = $this->signalsParser($this->signals['url']);
         $this->write($this->signals['name'], $signalsLinks);
 
-        /*
-        // stack overflow
-        $stackOverflowLinks = $this->stackOverflowParser($this->stackOverflow['url']);
-        $this->write($this->stackOverflow['name'], $stackOverflowLinks);
-         */
+        // twitter
+        #$twitterLinks = $this->twitterParser($this->twitter['url']);
+        #$this->write($this->twitter['name'], $twitterLinks);
+
     }
 
-    private function stackOverflowParser($url)
+    private function twitterParser($url)
     {
         try {
             $html = file_get_html($url); 
-
-            foreach($html->find('div.joblist a.title') as $e) {
-                echo $e->plaintext . '<br>';
-                //$links[] = array($title->plaintext, 'http://jobs.37signals.com'.$e->href);
-                #$links[$title->plaintext] = 'http://jobs.37signals.com'.$e->href;
+            foreach($html->find() as $e) {
+                echo $e . '<br>';
             }
 
             $html->clear();
@@ -143,7 +140,7 @@ class Job extends simple_html_dom_node{
         try {
             echo '<h3>' . $title . '</h3><ul>';
             foreach ($links as $title=>$url) {
-                echo '<li><a href="' . $url . '">' . $title . '<a></li>';
+                echo '<li><a href="' . $url . '">' . $title . '</a></li>';
             } 
             echo '</ul>';
         } catch (Exception $e) {
