@@ -12,12 +12,18 @@ include('simplehtmldom/simple_html_dom.php');
 class Job extends simple_html_dom_node{
 
     const logger = "errors.log";
-    private $ycombinator = array('name'=>'Y Combinator','url'=>'http://news.ycombinator.com/jobs');
-    private $craigslist = array('name'=>'Craigslist (telecommuting)', 'url'=>'https://www.google.com/search?q=%22This+is+a+contract+job%22+%22Telecommuting+is+ok.%22+PHP+site:craigslist.org&bav=on.2,or.r_gc.r_pw.,cf.osb&hl=en');
-    private $signals = array('name'=>'37signals (telecommuting)', 'url'=>'http://jobs.37signals.com/jobs/search?term=anywhere');
-    private $signals2 = array('name'=>'37signals (telecommuting)', 'url'=>'https://www.google.com/#sclient=psy-ab&hl=en&site=&source=hp&q=%22PHP%22%20%22anywhere%22%20site%3Ahttp%3A%2F%2Fjobs.37signals.com%2Fjobs&pbx=1&oq=&aq=&aqi=&aql=&gs_sm=&gs_upl=&bav=on.2,or.r_gc.r_pw.,cf.osb&fp=9c4f9ba461693a79&biw=1170&bih=595&pf=p&pdl=3000');
-    private $stackOverflow = array('name'=>'Stack Overflow', 'url'=>'http://careers.stackoverflow.com/jobs?searchTerm=php&range=20&istelecommute=true');
-    private $twitter = array('name'=>'Twitter', 'url'=>'https://twitter.com/#!/search/php%20telecommute');
+    private $ycombinator = array('name'=>'Y Combinator','logo'=>'ycombinator.jpg', 'url'=>'http://news.ycombinator.com/jobs');
+    private $craigslist = array('name'=>'Craigslist', 'logo'=>'craigslist.png', 'url'=>'https://www.google.com/search?q=%22Telecommuting+is+ok.%22+PHP+site:craigslist.org');
+    private $signals = array('name'=>'37signals', 'logo'=>'37signals.jpg', 'url'=>'http://jobs.37signals.com/jobs/search?term=anywhere');
+    private $dice = array('name'=>'Dice', 'logo'=>'dice.jpg', 'url'=>'https://www.google.com/search?q=%22telecommute%22+PHP+site:seeker.dice.com');
+    private $twitter = array('name'=>'Twitter', 'logo'=>'twitter.jpg', 'url'=>'https://www.google.com/search?q=telecommute+%22%23php%22++site%3Atwitter.com');
+
+    /* Not working */
+    /*
+    private $stackOverflow = array('name'=>'Stack Overflow', 'logo'=>'stackoverflow.jpg', 'url'=>'');
+    private $github = array('name'=>'github', 'logo'=>'github.jpg', 'url'=>'');
+     */
+
 
     public function __construct()
     {
@@ -25,19 +31,23 @@ class Job extends simple_html_dom_node{
 
         // ycombinator
         $ycombinatorLinks = $this->ycombinatorParser($this->ycombinator['url']);
-        $this->write($this->ycombinator['name'], $ycombinatorLinks);
+        $this->write($this->ycombinator, $ycombinatorLinks);
 
         // craiglist
-        $craigslistLinks = $this->craigslistParser($this->craigslist['url']);
-        $this->write($this->craigslist['name'], $craigslistLinks);
+        $craigslistLinks = $this->googleParser($this->craigslist['url']);
+        $this->write($this->craigslist, $craigslistLinks);
 
         // 37 signals
         $signalsLinks = $this->signalsParser($this->signals['url']);
-        $this->write($this->signals['name'], $signalsLinks);
+        $this->write($this->signals, $signalsLinks);
 
         // twitter
-        #$twitterLinks = $this->twitterParser($this->twitter['url']);
-        #$this->write($this->twitter['name'], $twitterLinks);
+        $twitterLinks = $this->googleParser($this->twitter['url']);
+        $this->write($this->twitter, $twitterLinks);
+
+        // dice
+        $diceLinks = $this->googleParser($this->dice['url']);
+        $this->write($this->dice, $diceLinks);
 
     }
 
@@ -83,13 +93,13 @@ class Job extends simple_html_dom_node{
         return $links;
     }
 
-    private function craigslistParser($url)
+    private function googleParser($url)
     {
         try {
             $html = file_get_html($url); 
 
             foreach($html->find('div#ires a') as $e) {
-                if ($e->plaintext !== 'Similar') {
+                if ($e->plaintext !== 'Similar' && $e->plaintext !== 'Cached') {
                     $href = explode('q=', $e->href);
                     $href2 = explode('&', $href[1]);
                     $links[$e->plaintext] = $href2[0];
@@ -131,14 +141,20 @@ class Job extends simple_html_dom_node{
         return $links;
     }
 
-    private function write($title, $links)
+    private function write($data, $links)
     {
         if (empty($links)) {
             return false;
         }
 
         try {
-            echo '<h3>' . $title . '</h3><ul>';
+            if (isset($data['logo'])) {
+                echo '<img class="logo" alt="'. $data['name'] . '" src="/images/' . $data['logo'] . '"/>';
+            } else {
+                echo '<h3>' . $data['name'] . '</h3>';
+            }
+            echo '<ul>';
+
             foreach ($links as $title=>$url) {
                 echo '<li><a href="' . $url . '">' . $title . '</a></li>';
             } 
