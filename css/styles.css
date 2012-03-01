@@ -1,0 +1,35 @@
+@font-face
+{
+    font-family: mainFont;
+    src: url('GeosansLight.ttf')
+}
+
+html {
+    font-family: mainFont;
+}
+
+body {
+    margin:0;
+    padding:0;
+}
+
+h2 {
+    margin:0;
+    padding:0;
+    color: #aaa;
+}
+
+a {
+    border:none;
+}
+a:link {color:#4682B4 ;}      /* unvisited link */
+a:visited {color:#FF0000;}  /* visited link */
+a:hover {color:#FF00FF;}  /* mouse over link */
+a:active {color:#0000FF;}  /* selected link */
+
+.main { 
+    width: 600px;
+    margin:0 auto;
+    padding:15px;
+    box-shadow: 10px 10px 155px #888888; 
+}
